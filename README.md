@@ -81,6 +81,36 @@ Sans ces variables, le site fonctionne normalement — l'email de confirmation
 est simplement désactivé (échec silencieux, jamais bloquant pour la capture
 du prospect).
 
+## Newsletter (`/admin/newsletter`)
+
+Envoi d'un email (texte + image(s)) à tout ou partie des contacts déjà
+collectés, en réutilisant le même Gmail que les confirmations
+(`GMAIL_USER` / `GMAIL_APP_PASSWORD` — aucune configuration supplémentaire).
+
+- **Destinataires** : tous les contacts, ou filtrés par mot-clé recherché
+  dans leurs centres d'intérêt (`interets_cumules`, formations, ebooks).
+  Les contacts désabonnés sont automatiquement exclus.
+- **Images** : coller une URL déjà hébergée publiquement (Drive en partage
+  "quiconque a le lien", Imgur...) — jamais un chemin local, qui ne
+  s'afficherait pas chez le destinataire.
+- **Aperçu** : le rendu affiché dans `/admin/newsletter` est exactement le
+  HTML qui sera envoyé — à vérifier avant tout premier envoi réel.
+- **Envoi** : un email à la fois, avec une pause d'environ 1,2s entre
+  chaque, piloté depuis le navigateur (progression "X / N" affichée) — un
+  échec individuel n'interrompt pas le reste de l'envoi. Pensé pour rester
+  dans les limites de Vercel (pas d'envoi de masse bloquant côté serveur).
+- **Désabonnement** : chaque email contient un lien unique par destinataire
+  (`/unsubscribe?token=...`) qui marque le contact désabonné dans le Sheet,
+  sans compte ni connexion requise.
+
+**Limite à connaître** : un Gmail personnel délivre correctement jusqu'à
+quelques centaines d'emails par jour ; au-delà (ou en cas d'envois
+fréquents, ou d'images très lourdes), Gmail peut classer les envois comme
+spam. L'interface avertit au-delà de 300 destinataires sélectionnés. Le
+code d'envoi est isolé dans `lib/newsletter.ts` : le jour où il faut migrer
+vers un service dédié (Brevo, Resend...), seule cette couche change, pas
+l'interface ni le reste du site.
+
 ## Configurer Google Sheets (la base de données derrière le site et le tableau de bord)
 
 ### 1. Créer le compte de service Google
@@ -212,20 +242,19 @@ Gmail dédié) :
    `GOOGLE_PRIVATE_KEY` en entier, avec ses `\n`).
 4. Déployez.
 
-## Ce qui n'est pas encore fait (volontairement)
-
-- **Pas de newsletter / emails automatiques** : le mini-CRM collecte déjà tout
-  ce qu'il faut (email, téléphone, centres d'intérêt) pour les brancher plus
-  tard, mais l'envoi d'emails est une phase suivante, hors périmètre actuel.
-
 ## Structure du projet
 
 ```
 app/page.tsx                    page publique, lit le contenu (Sheets ou démo)
 app/admin/page.tsx               tableau de bord (protégé par mot de passe)
 app/admin/login/page.tsx         connexion admin
+app/admin/newsletter/page.tsx    envoi de newsletter
+app/unsubscribe/page.tsx         page publique de désabonnement
 app/api/lead/route.ts            réception des formulaires publics, écrit dans Sheets
 app/api/admin/contenus/          API CRUD utilisée par le tableau de bord
+app/api/admin/newsletter/        API de liste des destinataires + envoi
+lib/newsletter.ts                logique d'envoi newsletter (isolée pour migration future)
+lib/newsletter-template.ts       rendu HTML de l'email (partagé aperçu/envoi)
 middleware.ts                    protège /admin et /api/admin par cookie de session
 lib/sheets.ts                     tout l'accès Google Sheets (lecture + écriture + dédup)
 lib/auth.ts                       session admin (cookie signé)

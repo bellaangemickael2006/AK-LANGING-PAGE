@@ -7,7 +7,7 @@ export function isMailConfigured(): boolean {
 
 let cachedTransporter: ReturnType<typeof nodemailer.createTransport> | null = null;
 
-function getTransporter() {
+export function getTransporter() {
   if (!isMailConfigured()) return null;
   if (!cachedTransporter) {
     cachedTransporter = nodemailer.createTransport({

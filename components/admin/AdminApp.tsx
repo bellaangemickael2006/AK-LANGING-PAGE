@@ -97,6 +97,9 @@ export function AdminApp() {
             <span className="text-sm font-semibold text-ak-white">Administration du contenu</span>
           </div>
           <div className="flex items-center gap-3">
+            <a href="/admin/newsletter" className="text-sm font-medium text-ak-silver hover:text-ak-white">
+              Newsletter
+            </a>
             <a href="/" target="_blank" className="text-sm font-medium text-ak-silver hover:text-ak-white">
               Voir le site ↗
             </a>

@@ -19,6 +19,7 @@ const PROSPECTS_HEADERS = [
   "id", "nom", "profession", "activite", "telephone", "email",
   "date_premiere_capture", "date_derniere_activite", "source_premiere",
   "interets_cumules", "formations_inscrites", "ebooks_telecharges", "articles_demandes",
+  "desabonne", "token_desabonnement",
 ];
 const EVENEMENTS_HEADERS = ["timestamp", "email", "telephone", "type", "item_id", "item_titre", "departement"];
 
