@@ -14,12 +14,16 @@ function useCanRender3D(): boolean | null {
   const [canRender, setCanRender] = useState<boolean | null>(null);
 
   useEffect(() => {
+    // La largeur d'écran n'est plus utilisée comme critère : elle ne reflète
+    // pas la capacité GPU réelle (beaucoup de téléphones récents à écran
+    // étroit gèrent très bien cette scène 3D légère) — on se fie plutôt aux
+    // signaux qui comptent vraiment : préférence d'accessibilité, nombre de
+    // cœurs CPU et économie de données.
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isNarrow = window.innerWidth < 640;
     const lowCores = typeof navigator.hardwareConcurrency === "number" && navigator.hardwareConcurrency <= 2;
     const connection = (navigator as Navigator & { connection?: NetworkInformation }).connection;
     const saveData = connection?.saveData === true;
-    setCanRender(!reducedMotion && !isNarrow && !lowCores && !saveData);
+    setCanRender(!reducedMotion && !lowCores && !saveData);
   }, []);
 
   return canRender;
