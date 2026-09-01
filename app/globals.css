@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+/*
+  Identité visuelle dérivée du logo AK World Business Services : fond noir
+  profond à dominante bleue, bleu royal pour le bloc "AK", blanc, argent
+  pour le globe, et une touche d'or très discrète (héritée de ProsigesV1)
+  réservée aux badges promotionnels — jamais la palette principale.
+  Thème sombre par défaut (identité de marque), avec une variante claire
+  activable par [data-theme="light"] sur <html> (voir ThemeToggle).
+*/
+:root {
+  --ak-black: #0a0c10;
+  --ak-charcoal: #12151d;
+  --ak-charcoal-2: #1a1f2b;
+  --ak-blue: #2451ff;
+  --ak-blue-bright: #4f74ff;
+  --ak-blue-deep: #101c47;
+  --ak-white: #f5f7fb;
+  --ak-silver: #9aa4b8;
+  --ak-silver-dim: #6b7385;
+  --ak-gold: #c79a56;
+  --ak-line: #ffffff;
+  --ak-grid-rgb: 245, 247, 251;
+
+  --font-heading: var(--font-manrope), "Segoe UI", system-ui, sans-serif;
+  --font-accent: var(--font-fraunces), Georgia, serif;
+}
+
+:root[data-theme="light"] {
+  --ak-black: #f3f4f7;
+  --ak-charcoal: #ffffff;
+  --ak-charcoal-2: #eceef3;
+  --ak-blue: #2451ff;
+  --ak-blue-bright: #1739cf;
+  --ak-blue-deep: #dbe3ff;
+  --ak-white: #10131a;
+  --ak-silver: #4d5568;
+  --ak-silver-dim: #7d8496;
+  --ak-gold: #9c6f2e;
+  --ak-line: #000000;
+  --ak-grid-rgb: 10, 12, 16;
+}
+
+@theme inline {
+  --color-ak-black: var(--ak-black);
+  --color-ak-charcoal: var(--ak-charcoal);
+  --color-ak-charcoal-2: var(--ak-charcoal-2);
+  --color-ak-blue: var(--ak-blue);
+  --color-ak-blue-bright: var(--ak-blue-bright);
+  --color-ak-blue-deep: var(--ak-blue-deep);
+  --color-ak-white: var(--ak-white);
+  --color-ak-silver: var(--ak-silver);
+  --color-ak-silver-dim: var(--ak-silver-dim);
+  --color-ak-gold: var(--ak-gold);
+  --color-ak-line: var(--ak-line);
+  --font-sans: var(--font-heading);
+  --font-accent: var(--font-accent);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--ak-black);
+  color: var(--ak-white);
+  font-family: var(--font-heading);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+::selection {
+  background: var(--ak-blue);
+  color: var(--ak-white);
+}
+
+.font-accent {
+  font-family: var(--font-accent);
+}
+
+/* Grain discret pour casser le plat du noir, sans imagerie stock */
+.ak-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
