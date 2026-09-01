@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { saveUploadedFile } from "@/lib/storage";
-
-const MAX_SIZE = 20 * 1024 * 1024; // 20 Mo
+import { MAX_UPLOAD_SIZE, MAX_UPLOAD_SIZE_LABEL } from "@/lib/upload-constants";
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData().catch(() => null);
@@ -10,8 +9,11 @@ export async function POST(req: NextRequest) {
   if (!file || !(file instanceof File)) {
     return NextResponse.json({ ok: false, error: "Aucun fichier reçu." }, { status: 400 });
   }
-  if (file.size > MAX_SIZE) {
-    return NextResponse.json({ ok: false, error: "Fichier trop volumineux (20 Mo maximum)." }, { status: 400 });
+  if (file.size > MAX_UPLOAD_SIZE) {
+    return NextResponse.json(
+      { ok: false, error: `Fichier trop volumineux (${MAX_UPLOAD_SIZE_LABEL} maximum).` },
+      { status: 400 }
+    );
   }
 
   try {

@@ -4,6 +4,8 @@ import Image from "next/image";
 import { ChangeEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { buildNewsletterHtml } from "@/lib/newsletter-template";
+import { uploadFile } from "@/lib/upload-client";
+import { MAX_UPLOAD_SIZE_LABEL } from "@/lib/upload-constants";
 
 interface Recipient {
   email: string;
@@ -50,24 +52,16 @@ export function NewsletterApp() {
 
     setUploading(true);
     setUploadError("");
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok || !data.ok) {
-        setUploadError(data.error || "Échec de l'envoi.");
-        return;
-      }
+    const result = await uploadFile(file);
+    if (!result.ok) {
+      setUploadError(result.error || "Échec de l'envoi.");
+    } else if (result.url) {
       setImageUrls((prev) => {
         const withoutEmptyTrailing = prev.filter((u) => u.trim());
-        return [...withoutEmptyTrailing, data.url];
+        return [...withoutEmptyTrailing, result.url as string];
       });
-    } catch {
-      setUploadError("Impossible de joindre le serveur.");
-    } finally {
-      setUploading(false);
     }
+    setUploading(false);
   }
 
   async function handleCheckRecipients() {
@@ -234,6 +228,7 @@ export function NewsletterApp() {
                   className="hidden"
                 />
               </div>
+              <p className="text-xs text-ak-silver-dim">Import PC : {MAX_UPLOAD_SIZE_LABEL} maximum par fichier.</p>
               {uploadError && <p className="text-xs text-red-400">{uploadError}</p>}
             </div>
           </div>

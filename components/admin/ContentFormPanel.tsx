@@ -4,6 +4,8 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ContentItem, ContentType, CtaAction } from "@/lib/types";
 import type { DriveFileSummary } from "@/lib/drive";
+import { uploadFile } from "@/lib/upload-client";
+import { MAX_UPLOAD_SIZE_LABEL } from "@/lib/upload-constants";
 
 const TYPE_OPTIONS: { value: ContentType; label: string }[] = [
   { value: "actualite", label: "Actualité" },
@@ -305,22 +307,13 @@ function UploadField({
 
     setUploading(true);
     setUploadError("");
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("kind", kind);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok || !data.ok) {
-        setUploadError(data.error || "Échec de l'envoi.");
-        return;
-      }
-      onChange(data.url);
-    } catch {
-      setUploadError("Impossible de joindre le serveur.");
-    } finally {
-      setUploading(false);
+    const result = await uploadFile(file, { kind });
+    if (!result.ok) {
+      setUploadError(result.error || "Échec de l'envoi.");
+    } else if (result.url) {
+      onChange(result.url);
     }
+    setUploading(false);
   }
 
   return (
@@ -354,6 +347,7 @@ function UploadField({
           Depuis Drive
         </button>
       </div>
+      <p className="text-xs text-ak-silver-dim">Import PC : {MAX_UPLOAD_SIZE_LABEL} maximum par fichier.</p>
       {uploadError && <p className="text-xs text-red-400">{uploadError}</p>}
 
       <AnimatePresence>
