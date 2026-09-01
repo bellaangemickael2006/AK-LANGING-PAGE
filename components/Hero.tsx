@@ -32,7 +32,7 @@ export function Hero() {
       />
 
       <div className="relative mx-auto flex max-w-4xl flex-col items-center px-5 text-center sm:px-8">
-        <div className="pointer-events-none absolute left-1/2 top-2 h-[280px] w-[280px] -translate-x-1/2 sm:h-80 sm:w-80">
+        <div className="pointer-events-none absolute left-1/2 top-0 h-[220px] w-[220px] -translate-x-1/2 sm:h-64 sm:w-64">
           <HeroScene heroRef={heroRef} />
         </div>
 
@@ -56,7 +56,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.6 }}
-          className="font-accent mt-6 text-sm italic tracking-wide text-ak-silver"
+          className="font-accent relative z-10 mt-6 text-sm italic tracking-wide text-ak-silver"
         >
           Conseil en gestion · Formation professionnelle · Abidjan
         </motion.p>
@@ -65,7 +65,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-4 text-3xl font-extrabold leading-tight text-ak-white sm:text-5xl"
+          className="relative z-10 mt-4 text-3xl font-extrabold leading-tight text-ak-white sm:text-5xl"
         >
           Le cabinet qui accompagne les entrepreneurs d&rsquo;Abidjan,{" "}
           <span className="text-ak-blue-bright">au quotidien</span>.
@@ -75,7 +75,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.7 }}
-          className="mt-5 max-w-xl text-base leading-relaxed text-ak-silver"
+          className="relative z-10 mt-5 max-w-xl text-base leading-relaxed text-ak-silver"
         >
           Plus de 10 ans à accompagner TPE, PME, associations et coopératives : gestion,
           comptabilité, formation professionnelle et insertion des jeunes entrepreneurs.

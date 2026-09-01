@@ -37,13 +37,23 @@ base de données du site (aucune base de données supplémentaire à héberger).
 
 ### Où sont stockés les fichiers importés
 
-**"Depuis mon PC"** enregistre le fichier directement dans le projet
-(`public/uploads`) — ça marche immédiatement, sans rien configurer. En local
-c'est définitif ; une fois le site déployé sur Vercel, ce dossier n'est plus
-persistant entre deux requêtes (fonctions serverless), il faudra alors
-brancher **Vercel Blob Storage** (un espace de stockage de fichiers fourni
-par Vercel, activable en un clic dans son tableau de bord, sans compte
-Google ni configuration côté cabinet) — prévu à ce moment-là du projet.
+**"Depuis mon PC"** : en local, le fichier est enregistré directement dans le
+projet (`public/uploads`) — ça marche immédiatement, sans rien configurer.
+
+En production (Vercel), le disque d'une fonction serverless n'est pas
+persistant : il faut un **Blob Store** Vercel (stockage de fichiers).
+Une fois créé et connecté au projet, `BLOB_READ_WRITE_TOKEN` est injecté
+automatiquement — le code bascule dessus tout seul (aucun changement de
+code, aucune manipulation côté cabinet) :
+
+1. Dans le tableau de bord Vercel du projet → **Storage** → **Create
+   Database** → **Blob**.
+2. Connectez-le au projet (proposé automatiquement à la création).
+3. Redéployez (ou attendez le prochain déploiement).
+
+Sans Blob Store connecté, "Depuis mon PC" continue de fonctionner en
+développement local mais les fichiers importés en production ne seront pas
+conservés — utilisez alors "Depuis Drive" ou une URL externe en attendant.
 
 **"Depuis Drive"** est optionnel, pour réutiliser des fichiers déjà présents
 dans un dossier Google Drive existant :

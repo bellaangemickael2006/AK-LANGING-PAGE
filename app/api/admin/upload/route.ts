@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { saveLocalFile } from "@/lib/local-storage";
+import { saveUploadedFile } from "@/lib/storage";
 
 const MAX_SIZE = 20 * 1024 * 1024; // 20 Mo
 
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const buffer = Buffer.from(await file.arrayBuffer());
-    const url = await saveLocalFile(buffer, file.name);
+    const url = await saveUploadedFile(buffer, file.name, file.type || "application/octet-stream");
     return NextResponse.json({ ok: true, url });
   } catch (error) {
     console.error("[api/admin/upload]", error);

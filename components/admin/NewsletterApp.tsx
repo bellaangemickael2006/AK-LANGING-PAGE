@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { buildNewsletterHtml } from "@/lib/newsletter-template";
 
@@ -20,6 +20,8 @@ export function NewsletterApp() {
   const [imageUrls, setImageUrls] = useState<string[]>([""]);
   const [mode, setMode] = useState<"tous" | "mot-cle">("tous");
   const [keyword, setKeyword] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   const [recipients, setRecipients] = useState<Recipient[] | null>(null);
   const [checking, setChecking] = useState(false);
@@ -40,6 +42,33 @@ export function NewsletterApp() {
       }),
     [message, cleanImageUrls]
   );
+
+  async function handleUploadImage(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+
+    setUploading(true);
+    setUploadError("");
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        setUploadError(data.error || "Échec de l'envoi.");
+        return;
+      }
+      setImageUrls((prev) => {
+        const withoutEmptyTrailing = prev.filter((u) => u.trim());
+        return [...withoutEmptyTrailing, data.url];
+      });
+    } catch {
+      setUploadError("Impossible de joindre le serveur.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function handleCheckRecipients() {
     setChecking(true);
@@ -189,6 +218,23 @@ export function NewsletterApp() {
               >
                 + Ajouter une image
               </button>
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="newsletter-image-upload"
+                  className="inline-flex cursor-pointer items-center rounded-lg border border-ak-line/10 px-3 py-1.5 text-xs font-semibold text-ak-white transition-colors hover:border-ak-blue/50 hover:bg-ak-blue/10"
+                >
+                  {uploading ? "Envoi…" : "Importer depuis mon PC"}
+                </label>
+                <input
+                  id="newsletter-image-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleUploadImage}
+                  disabled={uploading}
+                  className="hidden"
+                />
+              </div>
+              {uploadError && <p className="text-xs text-red-400">{uploadError}</p>}
             </div>
           </div>
 
