@@ -387,3 +387,47 @@ export async function upsertProspectAndLogEvent(payload: LeadPayload): Promise<v
     },
   });
 }
+
+const CONFIG_SHEET = "Config";
+
+/**
+ * Le mot de passe admin vit par défaut dans la variable d'environnement
+ * ADMIN_PASSWORD (Vercel), qu'on ne peut pas modifier depuis l'application
+ * elle-même. Une fois changé depuis le tableau de bord, son hash est stocké
+ * ici (onglet "Config", créé à la volée) et prend le pas sur la variable
+ * d'environnement. Retourne null si aucun changement n'a encore été fait.
+ */
+export async function getAdminPasswordHash(): Promise<string | null> {
+  if (!isSheetsConfigured()) return null;
+  try {
+    const sheets = getSheetsClient();
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: requireContentSheetId(),
+      range: `${CONFIG_SHEET}!B1`,
+    });
+    return res.data.values?.[0]?.[0]?.trim() || null;
+  } catch {
+    return null;
+  }
+}
+
+export async function setAdminPasswordHash(hash: string): Promise<void> {
+  const spreadsheetId = requireContentSheetId();
+  const sheets = getSheetsClient();
+
+  const meta = await sheets.spreadsheets.get({ spreadsheetId });
+  const existingTitles = meta.data.sheets?.map((s) => s.properties?.title) ?? [];
+  if (!existingTitles.includes(CONFIG_SHEET)) {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId,
+      requestBody: { requests: [{ addSheet: { properties: { title: CONFIG_SHEET } } }] },
+    });
+  }
+
+  await sheets.spreadsheets.values.update({
+    spreadsheetId,
+    range: `${CONFIG_SHEET}!A1:B1`,
+    valueInputOption: "RAW",
+    requestBody: { values: [["admin_password_hash", hash]] },
+  });
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ChangeEvent, useMemo, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { buildNewsletterHtml } from "@/lib/newsletter-template";
 import { uploadFile } from "@/lib/upload-client";
@@ -15,11 +15,42 @@ interface Recipient {
 
 const RECIPIENT_WARNING_THRESHOLD = 300;
 
+const DRAFT_STORAGE_KEY = "ak-newsletter-draft";
+
+interface NewsletterDraft {
+  subject: string;
+  message: string;
+  imageUrls: string[];
+}
+
+/**
+ * Le brouillon (sujet, message, images) est perdu à chaque navigation car
+ * l'état du formulaire ne vit que dans React — on le persiste dans
+ * localStorage pour qu'il reste en place tant que le personnel du cabinet
+ * ne le vide pas explicitement.
+ */
+function loadDraft(): NewsletterDraft | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(DRAFT_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return {
+      subject: typeof parsed.subject === "string" ? parsed.subject : "",
+      message: typeof parsed.message === "string" ? parsed.message : "",
+      imageUrls: Array.isArray(parsed.imageUrls) && parsed.imageUrls.length > 0 ? parsed.imageUrls : [""],
+    };
+  } catch {
+    return null;
+  }
+}
+
 export function NewsletterApp() {
   const router = useRouter();
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
-  const [imageUrls, setImageUrls] = useState<string[]>([""]);
+  const initialDraft = useMemo(() => loadDraft(), []);
+  const [subject, setSubject] = useState(initialDraft?.subject ?? "");
+  const [message, setMessage] = useState(initialDraft?.message ?? "");
+  const [imageUrls, setImageUrls] = useState<string[]>(initialDraft?.imageUrls ?? [""]);
   const [mode, setMode] = useState<"tous" | "mot-cle">("tous");
   const [keyword, setKeyword] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -33,6 +64,14 @@ export function NewsletterApp() {
   const [progress, setProgress] = useState({ sent: 0, total: 0 });
   const [failures, setFailures] = useState<string[]>([]);
   const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify({ subject, message, imageUrls }));
+    } catch {
+      // Stockage indisponible (navigation privée, quota) — le brouillon ne persistera pas, sans bloquer l'utilisateur.
+    }
+  }, [subject, message, imageUrls]);
 
   const cleanImageUrls = useMemo(() => imageUrls.map((u) => u.trim()).filter(Boolean), [imageUrls]);
   const previewHtml = useMemo(
@@ -135,14 +174,17 @@ export function NewsletterApp() {
   return (
     <div className="min-h-screen bg-ak-black">
       <header className="sticky top-0 z-30 border-b border-ak-line/8 bg-ak-black/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-y-2 px-5 py-3 sm:px-8">
           <div className="flex items-center gap-2.5">
             <Image src="/logo_ak_world.png" alt="AK World" width={32} height={32} className="rounded-md" />
             <span className="text-sm font-semibold text-ak-white">Newsletter</span>
           </div>
-          <div className="flex items-center gap-3">
-            <a href="/admin" className="text-sm font-medium text-ak-silver hover:text-ak-white">
+          <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5">
+            <a href="/admin" className="whitespace-nowrap text-sm font-medium text-ak-silver hover:text-ak-white">
               ← Contenu
+            </a>
+            <a href="/admin/settings" className="whitespace-nowrap text-sm font-medium text-ak-silver hover:text-ak-white">
+              Réglages
             </a>
             <button
               onClick={handleLogout}

@@ -91,16 +91,19 @@ export function AdminApp() {
   return (
     <div className="min-h-screen bg-ak-black">
       <header className="sticky top-0 z-30 border-b border-ak-line/8 bg-ak-black/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 sm:px-8">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-y-2 px-5 py-3 sm:px-8">
           <div className="flex items-center gap-2.5">
             <Image src="/logo_ak_world.png" alt="AK World" width={32} height={32} className="rounded-md" />
             <span className="text-sm font-semibold text-ak-white">Administration du contenu</span>
           </div>
-          <div className="flex items-center gap-3">
-            <a href="/admin/newsletter" className="text-sm font-medium text-ak-silver hover:text-ak-white">
+          <div className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1.5">
+            <a href="/admin/newsletter" className="whitespace-nowrap text-sm font-medium text-ak-silver hover:text-ak-white">
               Newsletter
             </a>
-            <a href="/" target="_blank" className="text-sm font-medium text-ak-silver hover:text-ak-white">
+            <a href="/admin/settings" className="whitespace-nowrap text-sm font-medium text-ak-silver hover:text-ak-white">
+              Réglages
+            </a>
+            <a href="/" target="_blank" className="whitespace-nowrap text-sm font-medium text-ak-silver hover:text-ak-white">
               Voir le site ↗
             </a>
             <button
