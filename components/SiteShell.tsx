@@ -7,6 +7,7 @@ import { Hero } from "./Hero";
 import { DemoBanner } from "./DemoBanner";
 import { SectionActualites, SectionFormations, SectionEbooks } from "./Sections";
 import { Footer } from "./Footer";
+import { Marquee } from "./Marquee";
 
 export function SiteShell({
   demoMode,
@@ -27,6 +28,7 @@ export function SiteShell({
       </div>
       <main>
         <Hero />
+        <Marquee />
         <SectionActualites items={actualites} />
         <SectionFormations items={formations} />
         <SectionEbooks items={ebooks} />

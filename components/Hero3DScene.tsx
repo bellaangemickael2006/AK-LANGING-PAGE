@@ -1,56 +1,83 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
+import { MotionValue } from "framer-motion";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 
-function RotatingObject() {
+/**
+ * Globe filaire (latitudes/longitudes) posé sur un noyau plein légèrement
+ * lumineux — reprend le motif du globe du logo AK World, en 3D. Réagit à
+ * la position de la souris (tilt doux) et à la progression du scroll dans
+ * le hero (rotation supplémentaire), les deux passés en MotionValues pour
+ * ne jamais déclencher de re-render React pendant l'animation.
+ */
+function ReactiveGlobe({
+  pointerX,
+  pointerY,
+  scrollProgress,
+}: {
+  pointerX: MotionValue<number>;
+  pointerY: MotionValue<number>;
+  scrollProgress: MotionValue<number>;
+}) {
   const groupRef = useRef<THREE.Group>(null);
-  const edgesGeometry = useMemo(() => new THREE.IcosahedronGeometry(1.5, 0), []);
+  const currentTiltX = useRef(0);
+  const currentTiltY = useRef(0);
+
+  const wireGeometry = useMemo(() => new THREE.SphereGeometry(1.42, 24, 16), []);
 
   useFrame((_, delta) => {
-    if (!groupRef.current) return;
-    groupRef.current.rotation.x += delta * 0.14;
-    groupRef.current.rotation.y += delta * 0.22;
+    const group = groupRef.current;
+    if (!group) return;
+
+    const targetTiltY = pointerX.get() * 0.5;
+    const targetTiltX = -pointerY.get() * 0.35;
+    // Amortissement manuel (lerp) pour un mouvement fluide, indépendant du
+    // framerate — évite le côté "collé au curseur" trop brutal.
+    currentTiltX.current += (targetTiltX - currentTiltX.current) * Math.min(delta * 4, 1);
+    currentTiltY.current += (targetTiltY - currentTiltY.current) * Math.min(delta * 4, 1);
+
+    group.rotation.x = currentTiltX.current;
+    group.rotation.y = currentTiltY.current + scrollProgress.get() * Math.PI * 0.6;
+    group.rotation.z += delta * 0.05;
   });
 
   return (
     <group ref={groupRef}>
       <mesh>
-        <icosahedronGeometry args={[1.4, 0]} />
+        <sphereGeometry args={[1.32, 32, 32]} />
         <meshStandardMaterial
-          color="#2451ff"
-          emissive="#101c47"
-          emissiveIntensity={0.7}
-          metalness={0.45}
-          roughness={0.25}
+          color="#101c47"
+          emissive="#2451ff"
+          emissiveIntensity={0.55}
+          metalness={0.6}
+          roughness={0.35}
         />
       </mesh>
       <lineSegments>
-        <edgesGeometry args={[edgesGeometry]} />
-        <lineBasicMaterial color="#f5f7fb" transparent opacity={0.4} />
+        <wireframeGeometry args={[wireGeometry]} />
+        <lineBasicMaterial color="#f5f7fb" transparent opacity={0.45} />
       </lineSegments>
     </group>
   );
 }
 
-/**
- * Scène 3D signature du hero : un icosaèdre abstrait bleu royal, cerclé
- * d'un fil blanc, qui tourne lentement — cohérent avec l'identité du logo.
- * Rendue uniquement côté client (voir HeroScene.tsx) et jamais sur mobile
- * bas de gamme / prefers-reduced-motion.
- */
-export default function Hero3DScene() {
+export default function Hero3DScene({
+  pointerX,
+  pointerY,
+  scrollProgress,
+}: {
+  pointerX: MotionValue<number>;
+  pointerY: MotionValue<number>;
+  scrollProgress: MotionValue<number>;
+}) {
   return (
-    <Canvas
-      camera={{ position: [0, 0, 4.4], fov: 42 }}
-      gl={{ alpha: true, antialias: true }}
-      dpr={[1, 1.5]}
-    >
+    <Canvas camera={{ position: [0, 0, 4.4], fov: 42 }} gl={{ alpha: true, antialias: true }} dpr={[1, 1.5]}>
       <ambientLight intensity={0.55} />
       <directionalLight position={[3, 3, 4]} intensity={1.2} color="#ffffff" />
       <directionalLight position={[-3, -2, -2]} intensity={0.5} color="#4f74ff" />
-      <RotatingObject />
+      <ReactiveGlobe pointerX={pointerX} pointerY={pointerY} scrollProgress={scrollProgress} />
     </Canvas>
   );
 }

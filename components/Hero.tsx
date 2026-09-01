@@ -2,13 +2,20 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useRef } from "react";
 import { MagneticButton } from "./MagneticButton";
 import { CountUp } from "./CountUp";
 import { HeroScene } from "./HeroScene";
 
 export function Hero() {
+  const heroRef = useRef<HTMLElement>(null);
+
   return (
-    <section id="top" className="ak-grain relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-28">
+    <section
+      id="top"
+      ref={heroRef}
+      className="ak-grain relative overflow-hidden pt-32 pb-20 sm:pt-40 sm:pb-28"
+    >
       <motion.div
         aria-hidden
         className="pointer-events-none absolute left-1/2 top-16 h-[420px] w-[420px] -translate-x-1/2 rounded-full blur-[110px]"
@@ -26,7 +33,7 @@ export function Hero() {
 
       <div className="relative mx-auto flex max-w-4xl flex-col items-center px-5 text-center sm:px-8">
         <div className="pointer-events-none absolute left-1/2 top-2 h-[280px] w-[280px] -translate-x-1/2 sm:h-80 sm:w-80">
-          <HeroScene />
+          <HeroScene heroRef={heroRef} />
         </div>
 
         <motion.div

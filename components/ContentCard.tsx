@@ -59,7 +59,7 @@ export function ContentCard({ item, index }: { item: ContentItem; index: number 
       transition={{ type: "spring", stiffness: 260, damping: 24, mass: 0.7, delay: (index % 3) * 0.12 }}
       className="group"
     >
-      <TiltCard className="flex h-full flex-col rounded-2xl border border-ak-line/8 bg-ak-charcoal p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-colors group-hover:border-ak-blue/40 group-hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_20px_45px_-20px_rgba(36,81,255,0.35)]">
+      <TiltCard className="flex h-full flex-col rounded-2xl border border-ak-line/8 bg-ak-charcoal/70 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl transition-colors group-hover:border-ak-blue/40 group-hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_20px_45px_-20px_rgba(36,81,255,0.35)]">
         {item.imageUrl ? (
           <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-ak-line/5 bg-gradient-to-br from-ak-charcoal-2 to-ak-black p-2.5">
             <div className="relative h-full w-full overflow-hidden rounded-lg shadow-[0_8px_24px_-8px_rgba(0,0,0,0.5)]">
