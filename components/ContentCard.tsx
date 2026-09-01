@@ -53,10 +53,10 @@ export function ContentCard({ item, index }: { item: ContentItem; index: number 
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 40, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, delay: (index % 3) * 0.1, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ type: "spring", stiffness: 260, damping: 24, mass: 0.7, delay: (index % 3) * 0.12 }}
       className="group"
     >
       <TiltCard className="flex h-full flex-col rounded-2xl border border-ak-line/8 bg-ak-charcoal p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-colors group-hover:border-ak-blue/40 group-hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_20px_45px_-20px_rgba(36,81,255,0.35)]">

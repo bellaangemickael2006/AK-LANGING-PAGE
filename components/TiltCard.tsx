@@ -29,6 +29,16 @@ export function TiltCard({
   const glowX = useTransform(x, [-0.5, 0.5], [0, 100]);
   const glowY = useTransform(y, [-0.5, 0.5], [0, 100]);
 
+  // Ombre portée qui accompagne le tilt (indépendante du box-shadow statique
+  // de la carte via filter: drop-shadow, donc les deux se cumulent sans
+  // s'écraser l'un l'autre).
+  const shadowX = useSpring(useTransform(x, [-0.5, 0.5], [-16, 16]), { stiffness: 220, damping: 24 });
+  const shadowY = useSpring(useTransform(y, [-0.5, 0.5], [-4, 20]), { stiffness: 220, damping: 24 });
+  const dynamicShadow = useTransform(
+    [shadowX, shadowY],
+    ([sx, sy]) => `drop-shadow(${sx}px ${sy}px 22px rgba(0,0,0,0.35))`
+  );
+
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     const rect = ref.current?.getBoundingClientRect();
     if (!rect) return;
@@ -46,7 +56,7 @@ export function TiltCard({
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{ rotateX, rotateY, transformPerspective: 900 }}
+      style={{ rotateX, rotateY, transformPerspective: 900, filter: dynamicShadow }}
       className={`relative ${className ?? ""}`}
     >
       <motion.div

@@ -1,6 +1,7 @@
 import { ContentItem } from "@/lib/types";
 import { ContentCard } from "./ContentCard";
 import { Reveal } from "./Reveal";
+import { SectionAmbient } from "./SectionAmbient";
 
 function SectionHeading({
   eyebrow,
@@ -39,21 +40,25 @@ function Grid({ items }: { items: ContentItem[] }) {
 
 export function SectionActualites({ items }: { items: ContentItem[] }) {
   return (
-    <section id="actualites" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
-      <SectionHeading
-        eyebrow="Le journal du cabinet"
-        title="Actualités"
-        description="Les dernières nouvelles d'AK World Business Services : accompagnements, publications et offres du moment."
-      />
-      <Grid items={items} />
+    <section id="actualites" className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8">
+      <SectionAmbient />
+      <div className="relative">
+        <SectionHeading
+          eyebrow="Le journal du cabinet"
+          title="Actualités"
+          description="Les dernières nouvelles d'AK World Business Services : accompagnements, publications et offres du moment."
+        />
+        <Grid items={items} />
+      </div>
     </section>
   );
 }
 
 export function SectionFormations({ items }: { items: ContentItem[] }) {
   return (
-    <section id="formations" className="border-t border-ak-line/6 bg-ak-charcoal/40">
-      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+    <section id="formations" className="relative overflow-hidden border-t border-ak-line/6 bg-ak-charcoal/40">
+      <SectionAmbient />
+      <div className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8">
         <SectionHeading
           eyebrow="Se former"
           title="Formations professionnelles"
@@ -67,13 +72,16 @@ export function SectionFormations({ items }: { items: ContentItem[] }) {
 
 export function SectionEbooks({ items }: { items: ContentItem[] }) {
   return (
-    <section id="ressources" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
-      <SectionHeading
-        eyebrow="Pour aller plus loin"
-        title="Ressources à télécharger"
-        description="Guides pratiques et ebooks du cabinet, à télécharger gratuitement."
-      />
-      <Grid items={items} />
+    <section id="ressources" className="relative mx-auto max-w-6xl px-5 py-20 sm:px-8">
+      <SectionAmbient />
+      <div className="relative">
+        <SectionHeading
+          eyebrow="Pour aller plus loin"
+          title="Ressources à télécharger"
+          description="Guides pratiques et ebooks du cabinet, à télécharger gratuitement."
+        />
+        <Grid items={items} />
+      </div>
     </section>
   );
 }

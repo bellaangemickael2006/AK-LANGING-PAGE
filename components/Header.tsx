@@ -15,6 +15,7 @@ const LINKS = [
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
   const { scrollY } = useScroll();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
@@ -41,15 +42,22 @@ export function Header() {
           </span>
         </a>
 
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-1 md:flex" onMouseLeave={() => setHovered(null)}>
           {LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="group relative text-sm font-medium text-ak-silver transition-colors hover:text-ak-white"
+              onMouseEnter={() => setHovered(link.href)}
+              className="relative rounded-full px-3 py-1.5 text-sm font-medium text-ak-silver transition-colors hover:text-ak-white"
             >
-              {link.label}
-              <span className="absolute -bottom-1 left-0 h-px w-0 bg-ak-blue-bright transition-all duration-300 group-hover:w-full" />
+              {hovered === link.href && (
+                <motion.span
+                  layoutId="nav-hover-pill"
+                  className="absolute inset-0 rounded-full bg-ak-line/8"
+                  transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                />
+              )}
+              <span className="relative">{link.label}</span>
             </a>
           ))}
         </nav>

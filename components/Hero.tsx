@@ -2,6 +2,9 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { MagneticButton } from "./MagneticButton";
+import { CountUp } from "./CountUp";
+import { HeroScene } from "./HeroScene";
 
 export function Hero() {
   return (
@@ -22,7 +25,12 @@ export function Hero() {
       />
 
       <div className="relative mx-auto flex max-w-4xl flex-col items-center px-5 text-center sm:px-8">
+        <div className="pointer-events-none absolute left-1/2 top-2 h-[280px] w-[280px] -translate-x-1/2 sm:h-80 sm:w-80">
+          <HeroScene />
+        </div>
+
         <motion.div
+          className="relative z-10"
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
@@ -73,24 +81,20 @@ export function Hero() {
           transition={{ delay: 0.55, duration: 0.6 }}
           className="mt-8 flex flex-wrap items-center justify-center gap-3"
         >
-          <motion.a
+          <MagneticButton
+            as="a"
             href="#actualites"
-            whileTap={{ scale: 0.96 }}
-            whileHover={{ scale: 1.03 }}
-            transition={{ type: "spring", stiffness: 400, damping: 20 }}
             className="relative overflow-hidden rounded-full bg-ak-blue px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_30px_-8px_rgba(36,81,255,0.6)] transition-colors hover:bg-ak-blue-bright"
           >
             Voir les actualités
-          </motion.a>
-          <motion.a
+          </MagneticButton>
+          <MagneticButton
+            as="a"
             href="#formations"
-            whileTap={{ scale: 0.96 }}
-            whileHover={{ scale: 1.03 }}
-            transition={{ type: "spring", stiffness: 400, damping: 20 }}
             className="rounded-full border border-ak-line/15 px-6 py-3 text-sm font-semibold text-ak-white transition-colors hover:border-ak-blue/50 hover:bg-ak-line/5"
           >
             Découvrir les formations
-          </motion.a>
+          </MagneticButton>
         </motion.div>
 
         <motion.dl
@@ -99,16 +103,22 @@ export function Hero() {
           transition={{ delay: 0.7, duration: 0.6 }}
           className="mt-14 grid w-full max-w-lg grid-cols-3 gap-4 border-t border-ak-line/8 pt-8"
         >
-          {[
-            { value: "+10 ans", label: "d'accompagnement" },
-            { value: "TPE · PME", label: "coopératives, associations" },
-            { value: "3 volets", label: "conseil, formation, insertion" },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <dt className="font-accent text-lg italic text-ak-blue-bright sm:text-xl">{stat.value}</dt>
-              <dd className="mt-1 text-xs leading-snug text-ak-silver-dim">{stat.label}</dd>
-            </div>
-          ))}
+          <div className="text-center">
+            <dt className="font-accent text-lg italic text-ak-blue-bright sm:text-xl">
+              <CountUp value={10} prefix="+" suffix=" ans" />
+            </dt>
+            <dd className="mt-1 text-xs leading-snug text-ak-silver-dim">d&rsquo;accompagnement</dd>
+          </div>
+          <div className="text-center">
+            <dt className="font-accent text-lg italic text-ak-blue-bright sm:text-xl">TPE · PME</dt>
+            <dd className="mt-1 text-xs leading-snug text-ak-silver-dim">coopératives, associations</dd>
+          </div>
+          <div className="text-center">
+            <dt className="font-accent text-lg italic text-ak-blue-bright sm:text-xl">
+              <CountUp value={3} suffix=" volets" />
+            </dt>
+            <dd className="mt-1 text-xs leading-snug text-ak-silver-dim">conseil, formation, insertion</dd>
+          </div>
         </motion.dl>
       </div>
     </section>
