@@ -25,6 +25,7 @@ export const PLACEHOLDER_CONTENT: ContentItem[] = [
     visible: true,
     ordre: 1,
     infosPratiques: "",
+    imageOrientation: "paysage",
   },
   {
     id: "actu-2",
@@ -44,6 +45,7 @@ export const PLACEHOLDER_CONTENT: ContentItem[] = [
     visible: true,
     ordre: 2,
     infosPratiques: "Places limitées — priorité aux 18-35 ans porteurs de projet.",
+    imageOrientation: "paysage",
   },
   {
     id: "actu-3",
@@ -63,6 +65,7 @@ export const PLACEHOLDER_CONTENT: ContentItem[] = [
     visible: true,
     ordre: 3,
     infosPratiques: "",
+    imageOrientation: "paysage",
   },
   {
     id: "formation-gestion-projet",
@@ -81,6 +84,7 @@ export const PLACEHOLDER_CONTENT: ContentItem[] = [
     visible: true,
     ordre: 4,
     infosPratiques: "Durée : 3 jours · Abidjan, Angré",
+    imageOrientation: "paysage",
   },
   {
     id: "formation-rh-tpe",
@@ -99,6 +103,7 @@ export const PLACEHOLDER_CONTENT: ContentItem[] = [
     visible: true,
     ordre: 5,
     infosPratiques: "Durée : 2 jours · Abidjan, Angré",
+    imageOrientation: "paysage",
   },
   {
     id: "formation-marketing-digital",
@@ -117,6 +122,7 @@ export const PLACEHOLDER_CONTENT: ContentItem[] = [
     visible: true,
     ordre: 6,
     infosPratiques: "Durée : 2 jours · Abidjan, Angré",
+    imageOrientation: "paysage",
   },
   {
     id: "ebook-piloter-sa-tpe",
@@ -135,6 +141,7 @@ export const PLACEHOLDER_CONTENT: ContentItem[] = [
     visible: true,
     ordre: 7,
     infosPratiques: "Format PDF · 24 pages",
+    imageOrientation: "paysage",
   },
   {
     id: "ebook-jeunes-entrepreneuriat",
@@ -153,5 +160,6 @@ export const PLACEHOLDER_CONTENT: ContentItem[] = [
     visible: true,
     ordre: 8,
     infosPratiques: "Format PDF · 18 pages",
+    imageOrientation: "paysage",
   },
 ];

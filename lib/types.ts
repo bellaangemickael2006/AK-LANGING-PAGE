@@ -1,5 +1,6 @@
 export type ContentType = "actualite" | "formation" | "ebook" | "article" | "promotion";
 export type CtaAction = "inscription" | "telechargement" | "info";
+export type ImageOrientation = "paysage" | "portrait";
 
 export interface ContentItem {
   id: string;
@@ -17,6 +18,7 @@ export interface ContentItem {
   visible: boolean;
   ordre: number;
   infosPratiques: string;
+  imageOrientation: ImageOrientation;
 }
 
 export type LeadActionType = "inscription" | "telechargement" | "info";

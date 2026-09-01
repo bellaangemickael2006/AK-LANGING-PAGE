@@ -37,6 +37,7 @@ const EMPTY: ContentItem = {
   visible: true,
   ordre: 100,
   infosPratiques: "",
+  imageOrientation: "paysage",
 };
 
 export function ContentFormPanel({
@@ -181,6 +182,36 @@ export function ContentFormPanel({
               onChange={(v) => set("imageUrl", v)}
               placeholder="https:// ou importez un fichier"
             />
+          </Row>
+
+          <Row label="Format de l'image">
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => set("imageOrientation", "paysage")}
+                className={`flex-1 rounded-lg border px-3.5 py-2.5 text-sm font-medium transition-colors ${
+                  values.imageOrientation === "paysage"
+                    ? "border-ak-blue bg-ak-blue/15 text-ak-white"
+                    : "border-ak-line/10 bg-ak-black/60 text-ak-silver hover:border-ak-line/25"
+                }`}
+              >
+                Paysage (large)
+              </button>
+              <button
+                type="button"
+                onClick={() => set("imageOrientation", "portrait")}
+                className={`flex-1 rounded-lg border px-3.5 py-2.5 text-sm font-medium transition-colors ${
+                  values.imageOrientation === "portrait"
+                    ? "border-ak-blue bg-ak-blue/15 text-ak-white"
+                    : "border-ak-line/10 bg-ak-black/60 text-ak-silver hover:border-ak-line/25"
+                }`}
+              >
+                Portrait (haut)
+              </button>
+            </div>
+            <p className="mt-1.5 text-xs text-ak-silver-dim">
+              Choisissez la forme la plus proche de votre image pour un rendu bien ajusté, sans espace vide autour.
+            </p>
           </Row>
 
           <Row label="Bouton d'action">

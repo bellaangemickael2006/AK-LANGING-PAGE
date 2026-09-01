@@ -13,7 +13,7 @@ import { google } from "googleapis";
 const CONTENT_HEADERS = [
   "id", "type", "titre", "chapo", "corps", "image_url", "date_publication",
   "date_fin", "departement", "cta_label", "cta_action", "fichier_url",
-  "visible", "ordre", "infos_pratiques",
+  "visible", "ordre", "infos_pratiques", "image_orientation",
 ];
 const PROSPECTS_HEADERS = [
   "id", "nom", "profession", "activite", "telephone", "email",

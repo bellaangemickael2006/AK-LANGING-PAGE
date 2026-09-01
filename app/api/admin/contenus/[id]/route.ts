@@ -25,6 +25,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
     visible: body.visible ?? true,
     ordre: typeof body.ordre === "number" ? body.ordre : 999,
     infosPratiques: body.infosPratiques ?? "",
+    imageOrientation: body.imageOrientation === "portrait" ? "portrait" : "paysage",
   };
 
   try {

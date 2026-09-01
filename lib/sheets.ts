@@ -1,10 +1,11 @@
 import { unstable_cache } from "next/cache";
 import { google, sheets_v4 } from "googleapis";
-import { ContentItem, ContentType, CtaAction, LeadPayload } from "./types";
+import { ContentItem, ContentType, CtaAction, ImageOrientation, LeadPayload } from "./types";
 import { normalizeEmail, normalizePhone } from "./validation";
 import { getGoogleAuth } from "./google-auth";
 
-const CONTENT_RANGE = "Contenus!A2:O";
+const CONTENT_RANGE = "Contenus!A2:P";
+const VALID_ORIENTATIONS: ImageOrientation[] = ["paysage", "portrait"];
 const PROSPECTS_RANGE = "Prospects!A2:M";
 const PROSPECTS_SHEET = "Prospects";
 const EVENEMENTS_SHEET = "Evenements";
@@ -68,6 +69,7 @@ function rowToContentItem(row: string[], index: number): ContentItem | null {
     visible,
     ordre,
     infosPratiques,
+    imageOrientation,
   ] = row;
 
   if (!id?.trim() || !titre?.trim()) return null;
@@ -89,6 +91,9 @@ function rowToContentItem(row: string[], index: number): ContentItem | null {
     visible: toBool(visible),
     ordre: toNumber(ordre, 1000 + index),
     infosPratiques: infosPratiques ?? "",
+    imageOrientation: VALID_ORIENTATIONS.includes(imageOrientation as ImageOrientation)
+      ? (imageOrientation as ImageOrientation)
+      : "paysage",
   };
 }
 
@@ -148,6 +153,7 @@ export async function listAllContenusForAdmin(): Promise<ContentItem[]> {
       const [
         id, type, titre, chapo, corps, imageUrl, datePublication, dateFin,
         departement, ctaLabel, ctaAction, fichierUrl, visible, ordre, infosPratiques,
+        imageOrientation,
       ] = r;
       if (!id?.trim()) return null;
       const item: ContentItem = {
@@ -166,6 +172,9 @@ export async function listAllContenusForAdmin(): Promise<ContentItem[]> {
         visible: toBool(visible),
         ordre: toNumber(ordre, 1000 + index),
         infosPratiques: infosPratiques ?? "",
+        imageOrientation: VALID_ORIENTATIONS.includes(imageOrientation as ImageOrientation)
+          ? (imageOrientation as ImageOrientation)
+          : "paysage",
       };
       return item;
     })
@@ -190,6 +199,7 @@ function contentItemToRow(item: ContentItem): string[] {
     item.visible ? "OUI" : "NON",
     String(item.ordre),
     item.infosPratiques,
+    item.imageOrientation,
   ];
 }
 
@@ -209,7 +219,7 @@ export async function createContenu(item: ContentItem): Promise<void> {
   const sheets = getSheetsClient();
   await sheets.spreadsheets.values.append({
     spreadsheetId,
-    range: "Contenus!A:O",
+    range: "Contenus!A:P",
     valueInputOption: "USER_ENTERED",
     insertDataOption: "INSERT_ROWS",
     requestBody: { values: [contentItemToRow(item)] },
@@ -223,7 +233,7 @@ export async function updateContenu(id: string, item: ContentItem): Promise<void
   if (!rowNumber) throw new Error("Ce contenu n'existe plus (il a peut-être été supprimé).");
   await sheets.spreadsheets.values.update({
     spreadsheetId,
-    range: `Contenus!A${rowNumber}:O${rowNumber}`,
+    range: `Contenus!A${rowNumber}:P${rowNumber}`,
     valueInputOption: "USER_ENTERED",
     requestBody: { values: [contentItemToRow({ ...item, id })] },
   });

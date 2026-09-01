@@ -35,6 +35,7 @@ export async function POST(req: NextRequest) {
     visible: body.visible ?? true,
     ordre: typeof body.ordre === "number" ? body.ordre : 999,
     infosPratiques: body.infosPratiques ?? "",
+    imageOrientation: body.imageOrientation === "portrait" ? "portrait" : "paysage",
   };
 
   try {
