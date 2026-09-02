@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { after, NextRequest, NextResponse } from "next/server";
 import { isSheetsConfigured, upsertProspectAndLogEvent } from "@/lib/sheets";
 import { sendConfirmationEmail } from "@/lib/mail";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
@@ -57,7 +57,10 @@ export async function POST(req: NextRequest) {
     });
     // Best-effort : le lead est déjà en sécurité dans Sheets, un souci
     // d'envoi d'email ne doit pas faire échouer la réponse au visiteur.
-    void sendConfirmationEmail(email, type, itemTitre);
+    // after() (et non un simple appel non attendu) est nécessaire ici :
+    // sur Vercel, une fonction serverless peut être gelée dès la réponse
+    // envoyée, ce qui interromprait un envoi Gmail encore en cours.
+    after(() => sendConfirmationEmail(email, type, itemTitre));
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("[api/lead] Erreur d'écriture Google Sheets:", error);
