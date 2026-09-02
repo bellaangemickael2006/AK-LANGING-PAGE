@@ -56,6 +56,19 @@ export function ContentCard({ item, index }: { item: ContentItem; index: number 
   const { open } = useLeadModal();
   const isPromo = item.type === "promotion";
 
+  function openLead() {
+    open({
+      itemId: item.id,
+      itemTitre: item.titre,
+      departement: item.departement,
+      action: item.ctaAction,
+      ctaLabel: item.ctaLabel || "En savoir plus",
+      fichierUrl: item.fichierUrl,
+      imageUrl: item.imageUrl,
+      corps: item.corps,
+    });
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40, scale: 0.96 }}
@@ -96,7 +109,13 @@ export function ContentCard({ item, index }: { item: ContentItem; index: number 
           )}
         </div>
 
-        <h3 className="mt-3 text-lg font-semibold leading-snug text-ak-white">{item.titre}</h3>
+        <button
+          type="button"
+          onClick={openLead}
+          className="mt-3 text-left text-lg font-semibold leading-snug text-ak-white transition-colors hover:text-ak-blue-bright"
+        >
+          {item.titre}
+        </button>
         <p className="mt-2 flex-1 text-sm leading-relaxed text-ak-silver">{item.chapo}</p>
 
         {item.infosPratiques && (
@@ -109,16 +128,7 @@ export function ContentCard({ item, index }: { item: ContentItem; index: number 
         {item.ctaAction !== "info" || item.ctaLabel ? (
           <motion.button
             whileTap={{ scale: 0.96 }}
-            onClick={() =>
-              open({
-                itemId: item.id,
-                itemTitre: item.titre,
-                departement: item.departement,
-                action: item.ctaAction,
-                ctaLabel: item.ctaLabel || "En savoir plus",
-                fichierUrl: item.fichierUrl,
-              })
-            }
+            onClick={openLead}
             className="mt-5 inline-flex items-center gap-1.5 self-start rounded-full border border-ak-blue/40 px-4 py-2 text-sm font-semibold text-ak-white transition-colors hover:border-ak-blue hover:bg-ak-blue/10"
           >
             {item.ctaLabel || "En savoir plus"}
