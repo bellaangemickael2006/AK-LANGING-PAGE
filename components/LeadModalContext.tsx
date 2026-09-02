@@ -11,8 +11,7 @@ export interface LeadModalConfig {
   action: LeadActionType;
   ctaLabel: string;
   fichierUrl?: string;
-  imageUrl?: string;
-  corps?: string;
+  onSuccess?: () => void;
 }
 
 interface LeadModalContextValue {

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { FormEvent, useEffect, useState } from "react";
 import { isValidEmail, isValidPhone } from "@/lib/validation";
@@ -96,6 +95,7 @@ export function LeadModal({
         // pas grave si indisponible
       }
       setStatus("success");
+      config.onSuccess?.();
     } catch {
       setErrorMessage("Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.");
       setStatus("error");
@@ -122,7 +122,7 @@ export function LeadModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby="lead-modal-title"
-            className="relative max-h-[85vh] w-full max-w-md overflow-y-auto rounded-2xl border border-ak-line/10 bg-ak-charcoal p-6 sm:p-8 shadow-[0_30px_80px_-20px_rgba(36,81,255,0.35)]"
+            className="relative w-full max-w-md rounded-2xl border border-ak-line/10 bg-ak-charcoal p-6 sm:p-8 shadow-[0_30px_80px_-20px_rgba(36,81,255,0.35)]"
             initial={{ opacity: 0, y: 24, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.97 }}
@@ -137,65 +137,39 @@ export function LeadModal({
             </button>
 
             {status === "success" ? (
-              <div className="-mx-6 -mt-6 pt-4 sm:-mx-8 sm:-mt-8">
-                {config.imageUrl && (
-                  <div className="relative aspect-[16/9] w-full overflow-hidden rounded-t-2xl bg-gradient-to-br from-ak-charcoal-2 to-ak-black">
-                    <Image
-                      src={config.imageUrl}
-                      alt={config.itemTitre}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 448px"
-                      className="object-contain p-3"
-                    />
-                  </div>
-                )}
-
-                <div className="px-6 pt-5 sm:px-8">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-ak-blue/15 text-ak-blue-bright">
-                    ✓
-                  </div>
-                  <h3 id="lead-modal-title" className="text-xl font-semibold text-ak-white">
-                    Merci, votre demande est enregistrée
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ak-silver">
-                    {config.action === "inscription" &&
-                      `Votre inscription à « ${config.itemTitre} » a bien été prise en compte. Le cabinet vous contactera prochainement.`}
-                    {config.action === "telechargement" &&
-                      (config.fichierUrl
-                        ? `Voici votre lien de téléchargement pour « ${config.itemTitre} ».`
-                        : `Votre demande pour « ${config.itemTitre} » est enregistrée. Le document vous sera transmis par le cabinet.`)}
-                    {config.action === "info" &&
-                      `Votre demande d'information sur « ${config.itemTitre} » a bien été transmise au cabinet.`}
-                  </p>
-
-                  {config.corps && (
-                    <div className="mt-5 border-t border-ak-line/10 pt-5">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-ak-silver-dim">
-                        {config.itemTitre}
-                      </p>
-                      <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-ak-silver">
-                        {config.corps}
-                      </p>
-                    </div>
-                  )}
-
-                  {config.action === "telechargement" && config.fichierUrl && (
-                    <a
-                      href={config.fichierUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-5 inline-flex items-center justify-center rounded-full bg-ak-blue px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-ak-blue-bright"
-                    >
-                      Télécharger le document
-                    </a>
-                  )}
-                  <button
-                    onClick={onClose}
-                    className="mt-5 block text-sm font-medium text-ak-silver underline-offset-4 hover:text-ak-white hover:underline"
-                  >
-                    Fermer
-                  </button>
+              <div className="pt-4">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-ak-blue/15 text-ak-blue-bright">
+                  ✓
                 </div>
+                <h3 id="lead-modal-title" className="text-xl font-semibold text-ak-white">
+                  Merci, votre demande est enregistrée
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-ak-silver">
+                  {config.action === "inscription" &&
+                    `Votre inscription à « ${config.itemTitre} » a bien été prise en compte. Le cabinet vous contactera prochainement.`}
+                  {config.action === "telechargement" &&
+                    (config.fichierUrl
+                      ? `Voici votre lien de téléchargement pour « ${config.itemTitre} ».`
+                      : `Votre demande pour « ${config.itemTitre} » est enregistrée. Le document vous sera transmis par le cabinet.`)}
+                  {config.action === "info" &&
+                    `Votre demande d'information sur « ${config.itemTitre} » a bien été transmise au cabinet.`}
+                </p>
+                {config.action === "telechargement" && config.fichierUrl && (
+                  <a
+                    href={config.fichierUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-5 inline-flex items-center justify-center rounded-full bg-ak-blue px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-ak-blue-bright"
+                  >
+                    Télécharger le document
+                  </a>
+                )}
+                <button
+                  onClick={onClose}
+                  className="mt-5 block text-sm font-medium text-ak-silver underline-offset-4 hover:text-ak-white hover:underline"
+                >
+                  Fermer
+                </button>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="pt-2">

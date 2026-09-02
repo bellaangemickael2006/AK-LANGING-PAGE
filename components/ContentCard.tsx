@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { ContentItem, ImageOrientation } from "@/lib/types";
 import { TiltCard } from "./TiltCard";
@@ -54,6 +55,7 @@ function AbstractMotif({ gold }: { gold?: boolean }) {
 
 export function ContentCard({ item, index }: { item: ContentItem; index: number }) {
   const { open } = useLeadModal();
+  const [revealed, setRevealed] = useState(false);
   const isPromo = item.type === "promotion";
 
   function openLead() {
@@ -64,8 +66,7 @@ export function ContentCard({ item, index }: { item: ContentItem; index: number 
       action: item.ctaAction,
       ctaLabel: item.ctaLabel || "En savoir plus",
       fichierUrl: item.fichierUrl,
-      imageUrl: item.imageUrl,
-      corps: item.corps,
+      onSuccess: () => setRevealed(true),
     });
   }
 
@@ -116,7 +117,14 @@ export function ContentCard({ item, index }: { item: ContentItem; index: number 
         >
           {item.titre}
         </button>
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-ak-silver">{item.chapo}</p>
+        <p className="mt-2 text-sm leading-relaxed text-ak-silver">{item.chapo}</p>
+
+        {revealed && item.corps && (
+          <p className="mt-2 flex-1 whitespace-pre-line border-t border-ak-line/8 pt-3 text-sm leading-relaxed text-ak-silver">
+            {item.corps}
+          </p>
+        )}
+        {!revealed && <div className="flex-1" />}
 
         {item.infosPratiques && (
           <p className="mt-3 text-xs font-medium text-ak-silver-dim">{item.infosPratiques}</p>
