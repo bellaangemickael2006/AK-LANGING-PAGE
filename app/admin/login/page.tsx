@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
@@ -9,6 +9,22 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // La vidéo doit tourner en continu, sans jamais s'arrêter : certains
+  // navigateurs (ou le double montage React en développement) peuvent
+  // interrompre la lecture automatique. On la relance systématiquement
+  // dès qu'elle s'arrête, tant que la page de connexion est affichée.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    function relancer() {
+      video?.play().catch(() => {});
+    }
+    relancer();
+    video.addEventListener("pause", relancer);
+    return () => video.removeEventListener("pause", relancer);
+  }, []);
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -35,10 +51,21 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ak-black px-4">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-ak-black px-4">
+      <video
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 z-0 h-full w-full object-cover opacity-50"
+      >
+        <source src="/videoAK.mp4" type="video/mp4" />
+      </video>
+      <div className="absolute inset-0 z-0 bg-ak-black/55" />
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm rounded-2xl border border-ak-line/10 bg-ak-charcoal p-8"
+        className="relative z-10 w-full max-w-sm rounded-2xl border border-ak-line/10 bg-ak-charcoal p-8"
       >
         <div className="flex flex-col items-center text-center">
           <Image src="/logo_ak_world.png" alt="AK World" width={56} height={56} className="rounded-xl" />
