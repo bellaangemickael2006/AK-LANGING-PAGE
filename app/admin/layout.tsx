@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { RegisterServiceWorker } from "@/components/admin/RegisterServiceWorker";
+import { InstallPrompt } from "@/components/admin/InstallPrompt";
 
 // Rend uniquement l'espace /admin installable comme application (PWA) —
 // le site public garde ses propres métadonnées, définies dans le layout
@@ -29,6 +30,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <>
       <RegisterServiceWorker />
+      <InstallPrompt />
       {children}
     </>
   );
