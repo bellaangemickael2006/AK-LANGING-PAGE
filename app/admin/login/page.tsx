@@ -58,11 +58,10 @@ export default function AdminLoginPage() {
         loop
         muted
         playsInline
-        className="absolute inset-0 z-0 h-full w-full object-cover opacity-50"
+        className="absolute inset-0 z-0 h-full w-full object-cover"
       >
         <source src="/videoAK.mp4" type="video/mp4" />
       </video>
-      <div className="absolute inset-0 z-0 bg-ak-black/55" />
       <form
         onSubmit={handleSubmit}
         className="relative z-10 w-full max-w-sm rounded-2xl border border-ak-line/10 bg-ak-charcoal p-8"
